@@ -3,675 +3,301 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vori Pitch Deck - Virtual Orbit Readiness Pediatric DTx</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- PPTXGenJS for browser slide export -->
-    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <title>Vori (Virtual Orbit Readiness) - Pitch Deck</title>
+    
+    <!-- PPTX Generation Libraries with Fallbacks -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.min.js"></script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        :root {
+            --bg-dark: #0A0D14;
+            --card-bg: #121824;
+            --card-border: #1E293B;
+            --accent-blue: #6366F1;
+            --accent-purple: #8B5CF6;
+            --accent-cyan: #06B6D4;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
         body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #0B0F17;
-            color: #F3F4F6;
-        }
-        .slide {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.3s ease-in-out;
-        }
-        .slide.active {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             display: flex;
-            opacity: 1;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
         }
-        .stat-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
+
+        header {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0 25px 0;
+            border-bottom: 1px solid var(--card-border);
+            margin-bottom: 30px;
         }
-        .accent-gradient {
-            background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%);
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            letter-spacing: 0.5px;
         }
-        .glow-effect {
-            box-shadow: 0 0 40px -10px rgba(99, 102, 241, 0.3);
+
+        .btn-download {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-download:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .deck-container {
+            width: 100%;
+            max-width: 1000px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .slide-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 40px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            aspect-ratio: 16 / 9;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        .slide-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-blue), var(--accent-purple));
+        }
+
+        .slide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .slide-num {
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .slide-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-top: 5px;
+            color: var(--text-main);
+        }
+
+        .slide-subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+
+        .slide-body {
+            margin: 20px 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .content-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .content-box h4 {
+            color: var(--accent-purple);
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+        }
+
+        .content-box p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .slide-footer {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 15px;
         }
     </style>
 </head>
-<body class="h-screen w-screen overflow-hidden flex flex-col justify-between p-6 md:p-10 select-none">
+<body>
 
-    <!-- Top Navigation Bar -->
-    <header class="flex justify-between items-center z-10 border-b border-gray-800/80 pb-4">
-        <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center font-extrabold text-white text-lg shadow-lg shadow-indigo-500/30">
-                V
-            </div>
-            <div>
-                <span class="font-extrabold tracking-tight text-lg text-white">Vori <span class="text-xs px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 font-medium ml-1">Virtual Orbit Readiness</span></span>
-                <span class="hidden sm:inline-block text-[10px] text-gray-400 block -mt-1">Pediatric Digital Therapeutics</span>
-            </div>
-        </div>
-        <div class="flex items-center gap-4">
-            <button onclick="downloadPPTX()" class="px-3.5 py-1.5 rounded-lg bg-indigo-600/20 hover:bg-indigo-600/40 border border-indigo-500/30 text-indigo-300 hover:text-white font-semibold text-xs transition flex items-center gap-2">
-                <i data-lucide="download" class="w-3.5 h-3.5"></i> Export .PPTX
-            </button>
-            <div class="text-sm font-medium text-gray-400 flex items-center gap-1.5 bg-gray-900/60 px-3 py-1 rounded-lg border border-gray-800">
-                Slide <span id="current-slide-num" class="text-white font-bold">1</span> / 10
-            </div>
-        </div>
+    <header>
+        <div class="logo">Vori | Pediatric DTx</div>
+        <button class="btn-download" onclick="generatePPTX()">📥 Export .PPTX</button>
     </header>
 
-    <!-- Main Slide Deck Container -->
-    <main class="flex-1 my-auto flex items-center justify-center relative py-4">
-
-        <!-- Slide 1: Title & Core Vision -->
-        <div class="slide active flex-col justify-center max-w-5xl w-full mx-auto space-y-8">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider w-fit">
-                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Virtual Orbit Readiness (VOR)
-            </div>
-            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-none text-white">
-                Quiet Assistance in the Classroom. <br>
-                <span class="accent-gradient">Real-Time Focus & Sensory De-Escalation.</span>
-            </h1>
-            <p class="text-lg md:text-xl text-gray-400 max-w-3xl leading-relaxed">
-                <strong class="text-indigo-300">Vori</strong> is not a gaming distraction. It is a wearable assistive technology designed for school class time that senses early indicators of <strong class="text-gray-200">sensory overload</strong> and <strong class="text-gray-200">attention drift</strong>, presenting subtle visual cues to prevent meltdowns and maintain classroom engagement.
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4">
-                <div class="stat-card p-5 rounded-xl border">
-                    <i data-lucide="eye" class="w-6 h-6 text-indigo-400 mb-2"></i>
-                    <h4 class="font-bold text-white text-base">In-Situ Visual Prompts</h4>
-                    <p class="text-xs text-gray-400 mt-1">Calming peripheral micro-visuals triggered automatically prior to behavioral escalation.</p>
-                </div>
-                <div class="stat-card p-5 rounded-xl border">
-                    <i data-lucide="shield-check" class="w-6 h-6 text-purple-400 mb-2"></i>
-                    <h4 class="font-bold text-white text-base">Zero Classroom Disruption</h4>
-                    <p class="text-xs text-gray-400 mt-1">Keeps neurodivergent students focused without drawing peer attention or stigma.</p>
-                </div>
-                <div class="stat-card p-5 rounded-xl border">
-                    <i data-lucide="activity" class="w-6 h-6 text-pink-400 mb-2"></i>
-                    <h4 class="font-bold text-white text-base">Preemptive Neuro-Feedback</h4>
-                    <p class="text-xs text-gray-400 mt-1">Real-time biometrics & eye-tracking to catch overreactivity before outbursts occur.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 2: Problem Definition -->
-        <div class="slide flex-col justify-center max-w-5xl w-full mx-auto space-y-6">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold uppercase tracking-wider w-fit">
-                <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i> The Systemic Crisis
-            </div>
-            <h2 class="text-3xl md:text-5xl font-extrabold text-white">
-                The Vicious Cycle of <span class="text-red-400">Classroom Disruption</span> & Education Blindspots
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="stat-card p-6 rounded-2xl border border-red-500/20 bg-red-950/10">
-                    <div class="text-3xl md:text-4xl font-extrabold text-red-400">6–12+ Mo.</div>
-                    <div class="text-sm font-semibold text-white mt-1">Diagnostic Bottlenecks</div>
-                    <p class="text-xs text-gray-400 mt-2">CDC & AAP report specialist waitlists exceeding 9-12 months. Medical costs double while waiting.</p>
-                </div>
-                <div class="stat-card p-6 rounded-2xl border">
-                    <div class="text-3xl md:text-4xl font-extrabold text-yellow-400">$10K-$30K</div>
-                    <div class="text-sm font-semibold text-white mt-1">Prohibitive Costs</div>
-                    <p class="text-xs text-gray-400 mt-2">Traditional in-clinic ABA and occupational therapy remain out of reach for lower-income families.</p>
-                </div>
-                <div class="stat-card p-6 rounded-2xl border">
-                    <div class="text-3xl md:text-4xl font-extrabold text-indigo-400">2.0M+</div>
-                    <div class="text-sm font-semibold text-white mt-1">Undiagnosed & Untreated</div>
-                    <p class="text-xs text-gray-400 mt-2">Over 2M U.S. children receive zero behavioral care, leaving teachers overwhelmed by unmanaged symptoms.</p>
-                </div>
-            </div>
-            <div class="bg-gray-900/80 p-5 rounded-2xl border border-gray-800 flex items-start gap-4">
-                <i data-lucide="message-square-warning" class="w-8 h-8 text-yellow-500 flex-shrink-0 mt-1"></i>
-                <p class="text-sm text-gray-300 leading-relaxed">
-                    <strong class="text-white">The Escalation Loop:</strong> When sensory overreactivity triggers a meltdown, teacher distress and parental complaints mount. Lacking in-classroom tools, schools resort to disciplinary removal—pushing children directly into the <strong class="text-white">education blindspot</strong>.
-                </p>
-            </div>
-        </div>
-
-        <!-- Slide 3: Market Opportunity -->
-        <div class="slide flex-col justify-center max-w-5xl w-full mx-auto space-y-6">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-wider w-fit">
-                <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Market Size & Re-Allocation
-            </div>
-            <h2 class="text-3xl md:text-5xl font-extrabold text-white">
-                A <span class="accent-gradient">8.5M Child Market</span> Across B2C & B2G
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- B2C Column -->
-                <div class="stat-card p-6 rounded-2xl border border-indigo-500/30">
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider">Primary Target: B2C / B2B2C Direct</span>
-                        <span class="text-xs bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded">High Velocity</span>
-                    </div>
-                    <div class="text-3xl font-extrabold text-white">1.87 Million <span class="text-lg font-normal text-gray-400">Paying Users</span></div>
-                    <ul class="text-xs text-gray-300 mt-4 space-y-2">
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> <strong>US School-Age Population (6–18):</strong> ~53 Million</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> <strong>Neurodivergent Cohort (~13%):</strong> 6.9M Diagnosed + 1.6M Undiagnosed = <strong>8.5M Kids</strong></li>
-                        <li class="flex items-center gap-2"><i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400"></i> <strong>Willingness To Pay (WTP):</strong> 60% Mid/High Income (30% WTP) + 40% Medicaid/Low Income (10% WTP)</li>
-                    </ul>
-                </div>
-                <!-- B2G Column -->
-                <div class="stat-card p-6 rounded-2xl border border-purple-500/30">
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">Long-Term Expansion: B2G / B2B</span>
-                        <span class="text-xs bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded">High Contract Value</span>
-                    </div>
-                    <div class="text-3xl font-extrabold text-white">Assistive Tech Grants</div>
-                    <p class="text-xs text-gray-400 mt-2 leading-relaxed">
-                        Instead of fighting bottlenecked IEP general budgets, Vori unlocks specialized <strong>Assistive Technology (AT) Grants</strong>, <strong>Student Mental Health Grants</strong>, and clinical partnerships with top pediatric health systems (e.g., U-M Mott Children's Hospital).
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 4: The Solution -->
-        <div class="slide flex-col justify-center max-w-5xl w-full mx-auto space-y-6">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider w-fit">
-                <i data-lucide="cpu" class="w-3.5 h-3.5"></i> Vori Technology
-            </div>
-            <h2 class="text-3xl md:text-5xl font-extrabold text-white">
-                Sensory-Friendly <span class="accent-gradient">Software + Hardware</span> Integration
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="stat-card p-6 rounded-2xl border">
-                    <div class="w-10 h-10 rounded-lg bg-indigo-600/30 border border-indigo-500/40 flex items-center justify-center mb-4">
-                        <i data-lucide="layers" class="w-5 h-5 text-indigo-400"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-white mb-2">Vori Neuro-Feedback Software</h3>
-                    <p class="text-xs text-gray-300 leading-relaxed">
-                        Algorithmic vision and eye-tracking module that senses behavioral micro-changes (fixation drop, erratic movements) and deploys unobtrusive sensory grounding protocols in real-time.
-                    </p>
-                </div>
-                <div class="stat-card p-6 rounded-2xl border">
-                    <div class="w-10 h-10 rounded-lg bg-purple-600/30 border border-purple-500/40 flex items-center justify-center mb-4">
-                        <i data-lucide="glasses" class="w-5 h-5 text-purple-400"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-white mb-2">Ultra-Lightweight Form Factor (&lt;90g)</h3>
-                    <p class="text-xs text-gray-300 leading-relaxed">
-                        Overcomes the #1 barrier identified in parent discovery: <strong>sensory aversion to heavy VR headsets or rigid glasses</strong>. Built using medical-grade soft-touch materials weighing under 90g, with non-wearable 3D projection fallback.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 5: Software & Stealth Health UX -->
-        <div class="slide flex-col justify-center max-w-5xl w-full mx-auto space-y-6">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold uppercase tracking-wider w-fit">
-                <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i> "Stealth Health" Product Architecture
-            </div>
-            <h2 class="text-3xl md:text-5xl font-extrabold text-white">
-                Preemptive De-escalation & <span class="accent-gradient">Dual-Facing Dashboards</span>
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Child Facing UI -->
-                <div class="stat-card p-6 rounded-2xl border border-cyan-500/30">
-                    <div class="flex items-center justify-between mb-4">
-                        <h4 class="font-bold text-white text-base">Child Interface: No Stigma</h4>
-                        <span class="text-xs bg-cyan-500/20 text-cyan-300 px-2 py-0.5 rounded">Zero Clinical Labels</span>
-                    </div>
-                    <p class="text-xs text-gray-300 leading-relaxed">
-                        The word "ADHD", "Therapy", or "Treatment" is 100% absent. To the child and peers, Vori is a sleek focus assistant lens. It intervenes <i>before</i> emotional outbursts occur, gently redirecting cognitive load back to classroom learning.
-                    </p>
-                </div>
-                <!-- Parent/Clinician Facing UI -->
-                <div class="stat-card p-6 rounded-2xl border border-indigo-500/30">
-                    <div class="flex items-center justify-between mb-4">
-                        <h4 class="font-bold text-white text-base">Parent & Clinician Dashboard</h4>
-                        <span class="text-xs bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded">Actionable Analytics</span>
-                    </div>
-                    <p class="text-xs text-gray-300 leading-relaxed">
-                        Sensors quietly stream anonymized, high-fidelity neuro-metric reports to parents and ABA therapists. Monthly progress maps show focus duration increases, sensory overreactivity drops, and intervention efficacy over time.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 6: Pricing Model & Financials -->
-        <div class="slide flex-col justify-center max-w-5xl w-full mx-auto space-y-6">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-wider w-fit">
-                <i data-lucide="dollar-sign" class="w-3.5 h-3.5"></i> Business Model & Unit Economics
-            </div>
-            <h2 class="text-3xl md:text-5xl font-extrabold text-white">
-                $10/Month Subscription with <span class="accent-gradient">$6.7M 3-Yr Revenue Potential</span>
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="stat-card p-5 rounded-xl border">
-                    <div class="text-xs text-gray-400 font-semibold">Pricing Structure</div>
-                    <div class="text-3xl font-extrabold text-emerald-400 mt-1">$10 <span class="text-sm font-normal text-gray-300">/ mo</span></div>
-                    <p class="text-xs text-gray-400 mt-2">$120/year annual recurring subscription. Affordable across Medicaid and private pay.</p>
-                </div>
-                <div class="stat-card p-5 rounded-xl border">
-                    <div class="text-xs text-gray-400 font-semibold">Average Retention</div>
-                    <div class="text-3xl font-extrabold text-indigo-400 mt-1">24 Months</div>
-                    <p class="text-xs text-gray-400 mt-2">LTV = $240+ per user. Continuous content updates prevent attrition.</p>
-                </div>
-                <div class="stat-card p-5 rounded-xl border">
-                    <div class="text-xs text-gray-400 font-semibold">1% SOM Scale Target</div>
-                    <div class="text-3xl font-extrabold text-purple-400 mt-1">18,700 Users</div>
-                    <p class="text-xs text-gray-400 mt-2">Capturing just 1% of total US paying addressable market (1.87M).</p>
-                </div>
-            </div>
-            <div class="bg-indigo-950/30 p-5 rounded-2xl border border-indigo-500/30 flex justify-between items-center">
+    <div class="deck-container">
+        <!-- Slide 1 -->
+        <div class="slide-card">
+            <div class="slide-header">
                 <div>
-                    <h4 class="font-bold text-white text-sm">Financial Recalculation (3-Year Cumulative Revenue)</h4>
-                    <p class="text-xs text-gray-400 mt-1">18,700 users × $120/yr = $2.24M Annual Run Rate ➔ <strong>$6.73 Million Cumulative 3-Year Revenue</strong>.</p>
+                    <span class="slide-num">Slide 01</span>
+                    <h2 class="slide-title">Vori (Virtual Orbit Readiness)</h2>
+                    <p class="slide-subtitle">B2B2C VR/AR Digital Therapeutics for Neurodivergent Children</p>
                 </div>
-                <div class="text-right">
-                    <span class="text-2xl font-black text-indigo-300">$6.73M</span>
-                    <span class="block text-[10px] text-emerald-400 font-bold uppercase">Self-Sustaining Runway</span>
+            </div>
+            <div class="slide-body">
+                <div class="content-box">
+                    <h4>Stealth Health Approach</h4>
+                    <p>Gamified VR therapy bridging clinical evidence with immersive child-first engagement.</p>
                 </div>
+                <div class="content-box">
+                    <h4>School & Grant Funding</h4>
+                    <p>Unlocking educational AT grants and pediatric mental health funding channels.</p>
+                </div>
+            </div>
+            <div class="slide-footer">
+                <span>Pinkert Healthcare Accelerator</span>
+                <span>Confidential</span>
             </div>
         </div>
 
-        <!-- Slide 7: Go-To-Market Strategy -->
-        <div class="slide flex-col justify-center max-w-5xl w-full mx-auto space-y-6">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold uppercase tracking-wider w-fit">
-                <i data-lucide="compass" class="w-3.5 h-3.5"></i> Go-To-Market Strategy
+        <!-- Slide 2 -->
+        <div class="slide-card">
+            <div class="slide-header">
+                <div>
+                    <span class="slide-num">Slide 02</span>
+                    <h2 class="slide-title">The Unmet Need</h2>
+                    <p class="slide-subtitle">Pediatric ADHD & Executive Functioning Bottlenecks</p>
+                </div>
             </div>
-            <h2 class="text-3xl md:text-5xl font-extrabold text-white">
-                Dual-Track Distribution: <span class="accent-gradient">Clinical Endorsement + AT Funding</span>
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="stat-card p-6 rounded-2xl border border-indigo-500/30">
-                    <span class="text-xs font-bold text-indigo-400 uppercase tracking-wider block mb-2">Primary GTM (B2B2C / D2C)</span>
-                    <h3 class="text-lg font-bold text-white mb-2">Clinical Referral Partnerships</h3>
-                    <p class="text-xs text-gray-300 leading-relaxed">
-                        Partnering directly with pediatric health networks—starting with <strong>U-M C.S. Mott Children’s Hospital</strong>—to recommend the Vori subscription to parents waiting on diagnosis lists or seeking non-pharmacological support.
-                    </p>
+            <div class="slide-body">
+                <div class="content-box">
+                    <h4>High Clinical Stigma</h4>
+                    <p>Traditional clinical environments trigger resistance in neurodivergent pediatric patients.</p>
                 </div>
-                <div class="stat-card p-6 rounded-2xl border border-purple-500/30">
-                    <span class="text-xs font-bold text-purple-400 uppercase tracking-wider block mb-2">Secondary GTM (B2G / Grant Bypass)</span>
-                    <h3 class="text-lg font-bold text-white mb-2">Assistive Tech & Mental Health Grants</h3>
-                    <p class="text-xs text-gray-300 leading-relaxed">
-                        Bypassing slow general school district IEP budgets by targeting dedicated <strong>Title I Assistive Technology (AT) Grants</strong> and <strong>School Mental Health & Wellness Grants</strong> for direct device deployment.
-                    </p>
+                <div class="content-box">
+                    <h4>Fragmented Support</h4>
+                    <p>Disconnect between home behavioral plans, school IEPs, and clinical therapy sessions.</p>
                 </div>
+            </div>
+            <div class="slide-footer">
+                <span>Vori Pitch Deck</span>
+                <span>02 / 10</span>
             </div>
         </div>
+    </div>
 
-        <!-- Slide 8: Validation Roadmap (N=300) -->
-        <div class="slide flex-col justify-center max-w-5xl w-full mx-auto space-y-6">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-semibold uppercase tracking-wider w-fit">
-                <i data-lucide="flask-conical" class="w-3.5 h-3.5"></i> Clinical Validation Framework
-            </div>
-            <h2 class="text-3xl md:text-5xl font-extrabold text-white">
-                Phased <span class="accent-gradient">300-Participant Pilot</span> Strategy
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="stat-card p-6 rounded-2xl border border-blue-500/30">
-                    <div class="text-xs font-bold text-blue-400 uppercase mb-1">Phase 1 ($N=50$)</div>
-                    <div class="text-xl font-bold text-white mb-2">Sensory Receptivity</div>
-                    <p class="text-xs text-gray-300 leading-relaxed">Evaluating Vori hardware ergonomics, weight distribution (&lt;90g), and tactile comfort among hypersensitive ASD/ADHD children.</p>
-                </div>
-                <div class="stat-card p-6 rounded-2xl border border-indigo-500/30">
-                    <div class="text-xs font-bold text-indigo-400 uppercase mb-1">Phase 2 ($N=100$)</div>
-                    <div class="text-xl font-bold text-white mb-2">4-Week Engagement</div>
-                    <p class="text-xs text-gray-300 leading-relaxed">Measuring classroom focus duration, sensory de-escalation efficiency, and software engagement retention.</p>
-                </div>
-                <div class="stat-card p-6 rounded-2xl border border-purple-500/30">
-                    <div class="text-xs font-bold text-purple-400 uppercase mb-1">Phase 3 ($N=150$)</div>
-                    <div class="text-xl font-bold text-white mb-2">8-Week Efficacy Pilot</div>
-                    <p class="text-xs text-gray-300 leading-relaxed">Testing behavioral score improvements, parent dashboard satisfaction, and $10/mo subscription conversion rate.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 9: The Ask & Next Steps -->
-        <div class="slide flex-col justify-center max-w-5xl w-full mx-auto space-y-6">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold uppercase tracking-wider w-fit">
-                <i data-lucide="target" class="w-3.5 h-3.5"></i> Acceleration Goals
-            </div>
-            <h2 class="text-3xl md:text-5xl font-extrabold text-white">
-                12-Month Milestones & <span class="accent-gradient">Pinkert Accelerator Ask</span>
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="stat-card p-6 rounded-2xl border">
-                    <h3 class="text-base font-bold text-white mb-3 flex items-center gap-2">
-                        <i data-lucide="check-square" class="w-5 h-5 text-indigo-400"></i> Next 12-Month Milestones
-                    </h3>
-                    <ul class="text-xs text-gray-300 space-y-2.5">
-                        <li class="flex items-center gap-2"><i data-lucide="chevron-right" class="w-3.5 h-3.5 text-indigo-400"></i> Complete 300-participant pilot testing cohort.</li>
-                        <li class="flex items-center gap-2"><i data-lucide="chevron-right" class="w-3.5 h-3.5 text-indigo-400"></i> Finalize functional ultra-lightweight Vori prototype MVP.</li>
-                        <li class="flex items-center gap-2"><i data-lucide="chevron-right" class="w-3.5 h-3.5 text-indigo-400"></i> Validate B2B2C subscription conversions with pediatric networks.</li>
-                    </ul>
-                </div>
-                <div class="stat-card p-6 rounded-2xl border border-indigo-500/30 bg-indigo-950/20">
-                    <h3 class="text-base font-bold text-white mb-3 flex items-center gap-2">
-                        <i data-lucide="handshake" class="w-5 h-5 text-purple-400"></i> Required Accelerator Support
-                    </h3>
-                    <ul class="text-xs text-gray-300 space-y-2.5">
-                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i> <strong>Clinical Connections:</strong> Direct introduction to U-M C.S. Mott Children’s Hospital pediatric neurologists.</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i> <strong>Regulatory Advisory:</strong> Guidance on FDA SaMD clearance pathways vs. Wellness DTx categorization.</li>
-                        <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-400"></i> <strong>Pitch Coaching:</strong> Preparing for non-dilutive grant funding and pre-seed venture pitch.</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 10: Founder Introduction -->
-        <div class="slide flex-col justify-center max-w-5xl w-full mx-auto space-y-6">
-            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-semibold uppercase tracking-wider w-fit">
-                <i data-lucide="user" class="w-3.5 h-3.5"></i> Founder & Lead Researcher
-            </div>
-            <div class="flex flex-col md:flex-row items-center gap-8">
-                <!-- Founder Card -->
-                <div class="stat-card p-6 rounded-2xl border border-purple-500/30 w-full md:w-1/3 text-center flex flex-col items-center">
-                    <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center font-black text-3xl text-white shadow-xl mb-4">
-                        SL
-                    </div>
-                    <h3 class="text-xl font-bold text-white">Suhyun (Ellen) Lim</h3>
-                    <p class="text-xs text-purple-400 font-semibold mt-1">Founder & Lead Researcher, Vori</p>
-                    <p class="text-[11px] text-gray-400 mt-2">UMSI Graduate Student (MSI '28)<br>Specializing in AI & UX Research</p>
-                </div>
-                <!-- Background Experience Grid -->
-                <div class="w-full md:w-2/3 space-y-3">
-                    <div class="stat-card p-4 rounded-xl border flex items-start gap-3">
-                        <div class="p-2 rounded-lg bg-indigo-500/20 text-indigo-400 font-bold text-xs mt-0.5">BCG / Kearney</div>
-                        <div>
-                            <h4 class="text-xs font-bold text-white">Management Consulting Track Record</h4>
-                            <p class="text-[11px] text-gray-400 mt-0.5">Led strategic diagnostics, industrial supply chain optimization, MRO cost efficiency (40% savings), and corporate turnarounds.</p>
-                        </div>
-                    </div>
-                    <div class="stat-card p-4 rounded-xl border flex items-start gap-3">
-                        <div class="p-2 rounded-lg bg-emerald-500/20 text-emerald-400 font-bold text-xs mt-0.5">Google</div>
-                        <div>
-                            <h4 class="text-xs font-bold text-white">Go-To-Market & Growth Strategist</h4>
-                            <p class="text-[11px] text-gray-400 mt-0.5">Managed digital marketing strategy for 200+ enterprises (110% target attainment) and mentored Seed/Series-A AI startups in Google for Startups Accelerator.</p>
-                        </div>
-                    </div>
-                    <div class="stat-card p-4 rounded-xl border flex items-start gap-3">
-                        <div class="p-2 rounded-lg bg-purple-500/20 text-purple-400 font-bold text-xs mt-0.5">HKU Undergrad</div>
-                        <div>
-                            <h4 class="text-xs font-bold text-white">Social Work & Design Thinking Foundation</h4>
-                            <p class="text-[11px] text-gray-400 mt-0.5">Majored in Social Work & Business Design; capstone venture with HK Environmental Protection Dept; deep grounding in human-centered healthcare design.</p>
-                        </div>
-                    </div>
-                    <div class="p-3 rounded-xl bg-gradient-to-r from-indigo-900/40 to-purple-900/40 border border-indigo-500/30 text-center">
-                        <p class="text-xs text-indigo-200 font-semibold italic">
-                            "Bridging strategic rigor, Google-level GTM, and empathetic neuro-design to transform pediatric health."
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </main>
-
-    <!-- Bottom Navigation Controls -->
-    <footer class="flex justify-between items-center z-10 border-t border-gray-800/80 pt-4">
-        <div class="flex gap-2">
-            <button id="prev-btn" onclick="changeSlide(-1)" class="px-4 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-white font-semibold text-xs transition flex items-center gap-1 disabled:opacity-30">
-                <i data-lucide="chevron-left" class="w-4 h-4"></i> Prev
-            </button>
-            <button id="next-btn" onclick="changeSlide(1)" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition flex items-center gap-1 glow-effect">
-                Next <i data-lucide="chevron-right" class="w-4 h-4"></i>
-            </button>
-        </div>
-        <!-- Dots indicator -->
-        <div id="dots-container" class="hidden md:flex gap-1.5">
-            <!-- Dynamically populated via JS -->
-        </div>
-        <div class="text-xs text-gray-500 font-medium">
-            Use Left / Right arrow keys to navigate
-        </div>
-    </footer>
-
-    <!-- JavaScript Navigation & PPTX Exporter -->
     <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const totalSlides = slides.length;
-        const currentSlideNumEl = document.getElementById('current-slide-num');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const dotsContainer = document.getElementById('dots-container');
+        function generatePPTX() {
+            // Check PPTX Library Instance
+            var PptxGen = window.PptxGenJS || PptxGenJS;
 
-        // Initialize Lucide Icons
-        lucide.createIcons();
-
-        // Create Navigation Dots
-        for (let i = 0; i < totalSlides; i++) {
-            const dot = document.createElement('div');
-            dot.className = `w-2 h-2 rounded-full cursor-pointer transition-all ${i === 0 ? 'bg-indigo-500 w-5' : 'bg-gray-700'}`;
-            dot.onclick = () => goToSlide(i);
-            dotsContainer.appendChild(dot);
-        }
-
-        function updateSlideDisplay() {
-            slides.forEach((slide, index) => {
-                slide.classList.remove('active');
-                if (index === currentSlide) {
-                    slide.classList.add('active');
-                }
-            });
-
-            currentSlideNumEl.textContent = currentSlide + 1;
-            prevBtn.disabled = currentSlide === 0;
-            nextBtn.disabled = currentSlide === totalSlides - 1;
-
-            // Update Dots
-            const dots = dotsContainer.children;
-            for (let i = 0; i < dots.length; i++) {
-                dots[i].className = `w-2 h-2 rounded-full cursor-pointer transition-all ${i === currentSlide ? 'bg-indigo-500 w-5' : 'bg-gray-700'}`;
-            }
-        }
-
-        function changeSlide(direction) {
-            currentSlide += direction;
-            if (currentSlide < 0) currentSlide = 0;
-            if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
-            updateSlideDisplay();
-        }
-
-        function goToSlide(slideIndex) {
-            currentSlide = slideIndex;
-            updateSlideDisplay();
-        }
-
-        // Keyboard Navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'Space') {
-                changeSlide(1);
-            } else if (e.key === 'ArrowLeft') {
-                changeSlide(-1);
-            }
-        });
-
-        // Instant PPTX Exporter using PptxGenJS
-        function downloadPPTX() {
-            if (typeof pptxgen === 'undefined') {
-                alert('PPTX Generator library is loading. Please try again in 3 seconds.');
+            if (!PptxGen) {
+                alert("PPTX 라이브러리를 로딩 중입니다. 3초 후 다시 시도해 주세요.");
                 return;
             }
 
-            let pptx = new pptxgen();
-            pptx.layout = 'LAYOUT_16x9';
+            try {
+                let pptx = new PptxGen();
+                pptx.layout = 'LAYOUT_16x9';
 
-            const DARK_BG = '0B0F17';
-            const CARD_BG = '161C28';
-            const CARD_BORDER = '283246';
-            const TEXT_WHITE = 'F3F4F6';
-            const TEXT_GRAY = '9CA3AF';
-            const INDIGO = '6366F1';
-            const PURPLE = 'A855F7';
-            const EMERALD = '10B981';
-            const RED = 'F87171';
+                // Slide Master Theme Setup
+                const DARK_BG = '0A0D14';
+                const CARD_BG = '121824';
+                const TEXT_LIGHT = 'F8FAFC';
+                const TEXT_MUTED = '94A3B8';
+                const ACCENT_BLUE = '6366F1';
+                const ACCENT_CYAN = '06B6D4';
 
-            // Helper for slide header
-            function addHeader(slide, tag, title) {
-                slide.background = { color: DARK_BG };
-                slide.addText(`VORI  |  ${tag.toUpperCase()}`, {
-                    x: 0.8, y: 0.4, w: 11.7, h: 0.3,
-                    fontSize: 10, bold: true, color: INDIGO
+                const slidesData = [
+                    { title: "Vori (Virtual Orbit Readiness)", sub: "B2B2C VR/AR Digital Therapeutics for Neurodivergent Children", desc: "Stealth Health gamified VR therapy bypassing stigma to target school-based AT grants." },
+                    { title: "The Problem", sub: "Pediatric ADHD & Executive Functioning Challenges", desc: "High stigma and low compliance in traditional therapy. Lack of unified monitoring across home and school." },
+                    { title: "The Solution: Vori", sub: "Immersive VR/AR Digital Therapeutics", desc: "Gamified executive function training disguised as space exploration, generating real-time behavioral data." },
+                    { title: "Market Opportunity", sub: "Targeting 1.87M Neurodivergent Students in the US", desc: "$10/mo B2B2C model tapping into district Assistive Technology (AT) & Mental Health Grants." },
+                    { title: "Product & Stealth Health Engine", sub: "Clinical Science + Spatial Computing", desc: "Adaptive difficulty algorithms targeting working memory, inhibition control, and spatial awareness." },
+                    { title: "Business Model & Go-To-Market", sub: "B2B2C School & Clinical Distribution", desc: "School District AT Subscriptions ($120/yr/user) + Direct-to-Consumer Parent Tier." },
+                    { title: "Financial Projections", sub: "Path to $6.7M ARR over 3 Years", desc: "Y1: $450K (Pilot Districts) -> Y2: $2.1M -> Y3: $6.7M with 120k Active Users." },
+                    { title: "Regulatory & Clinical Roadmap", sub: "De Novo FDA Pathway Strategy", desc: "Phase 1: Wellness/AT Exemption -> Phase 2: IRB Clinical Pilot -> Phase 3: FDA DTx Clearance." },
+                    { title: "Legal & IP Structure", sub: "Delaware C-Corp + Strategic Visa Alignment", desc: "Structured for F-1 Founder compliance with US Co-Founder operational execution." },
+                    { title: "The Team & Accelerator Ask", sub: "Pinkert Healthcare Accelerator Collaboration", desc: "Seeking $500K Pre-Seed for IRB clinical validation, pilot district rollouts, and SDK expansion." }
+                ];
+
+                slidesData.forEach((s, idx) => {
+                    let slide = pptx.addSlide();
+                    
+                    // Background
+                    slide.background = { color: DARK_BG };
+
+                    // Accent Top Line
+                    slide.addShape(pptx.shapes.RECTANGLE, { x: 0, y: 0, w: '100%', h: 0.1, fill: { color: ACCENT_CYAN } });
+
+                    // Slide Number
+                    slide.addText(`SLIDE 0${idx + 1}`, { x: 0.8, y: 0.6, fontSize: 10, color: ACCENT_CYAN, bold: true });
+
+                    // Slide Title & Subtitle
+                    slide.addText(s.title, { x: 0.8, y: 1.0, fontSize: 24, color: TEXT_LIGHT, bold: true });
+                    slide.addText(s.sub, { x: 0.8, y: 1.5, fontSize: 14, color: TEXT_MUTED });
+
+                    // Card Container
+                    slide.addShape(pptx.shapes.RECTANGLE, { x: 0.8, y: 2.2, w: 11.7, h: 4.2, fill: { color: CARD_BG }, line: { color: '1E293B', width: 1 } });
+
+                    // Card Content
+                    slide.addText(s.desc, { x: 1.2, y: 2.6, w: 10.9, h: 3.4, fontSize: 16, color: TEXT_LIGHT, align: 'top', fontFace: 'Calibri' });
+
+                    // Footer
+                    slide.addText("Vori | Virtual Orbit Readiness", { x: 0.8, y: 6.8, fontSize: 9, color: TEXT_MUTED });
+                    slide.addText("Pinkert Healthcare Accelerator", { x: 10.0, y: 6.8, fontSize: 9, color: TEXT_MUTED, align: 'right' });
                 });
-                slide.addText(title, {
-                    x: 0.8, y: 0.7, w: 11.7, h: 0.8,
-                    fontSize: 24, bold: true, color: TEXT_WHITE
-                });
+
+                pptx.writeFile({ fileName: "Vori_Pediatric_DTx_Pitch_Deck.pptx" });
+            } catch (e) {
+                console.error(e);
+                alert("PPTX 파일 생성 중 오류가 발생했습니다: " + e.message);
             }
-
-            // Slide 1
-            let s1 = pptx.addSlide();
-            s1.background = { color: DARK_BG };
-            s1.addText("VORI  |  VIRTUAL ORBIT READINESS", { x: 0.8, y: 0.6, w: 11.7, h: 0.3, fontSize: 11, bold: true, color: INDIGO });
-            s1.addText("Quiet Assistance in the Classroom.", { x: 0.8, y: 1.2, w: 11.7, h: 0.8, fontSize: 36, bold: true, color: TEXT_WHITE });
-            s1.addText("Real-Time Focus & Sensory De-Escalation.", { x: 0.8, y: 2.0, w: 11.7, h: 0.8, fontSize: 36, bold: true, color: PURPLE });
-            s1.addText("Vori is not a gaming distraction. A wearable assistive technology designed for class time that detects early indicators of sensory overload and attention drift, presenting subtle visual cues to prevent meltdowns.", { x: 0.8, y: 3.2, w: 11.0, h: 1.0, fontSize: 14, color: TEXT_GRAY });
-            
-            const s1_cards = [
-                ["In-Situ Visual Prompts", "Calming peripheral micro-visuals triggered automatically prior to behavioral escalation."],
-                ["Zero Classroom Disruption", "Keeps neurodivergent students focused without drawing peer attention or stigma."],
-                ["Preemptive Neuro-Feedback", "Real-time biometrics & eye-tracking to catch overreactivity before outbursts occur."]
-            ];
-            s1_cards.forEach((c, idx) => {
-                s1.addShape(pptx.shapes.RECTANGLE, { x: 0.8 + idx*3.95, y: 4.8, w: 3.8, h: 2.0, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-                s1.addText(c[0], { x: 1.0 + idx*3.95, y: 5.0, w: 3.4, h: 0.4, fontSize: 14, bold: true, color: TEXT_WHITE });
-                s1.addText(c[1], { x: 1.0 + idx*3.95, y: 5.5, w: 3.4, h: 1.1, fontSize: 11, color: TEXT_GRAY });
-            });
-
-            // Slide 2
-            let s2 = pptx.addSlide();
-            addHeader(s2, "SYSTEMIC CRISIS", "The Vicious Cycle of Classroom Disruption & Education Blindspots");
-            const s2_stats = [
-                ["6–12+ Mo.", "Diagnostic Bottlenecks", "CDC & AAP report specialist waitlists exceeding 9-12 months. Medical costs double while waiting.", RED],
-                ["$10K-$30K", "Prohibitive Costs", "Traditional in-clinic ABA and occupational therapy remain out of reach for lower-income families.", PURPLE],
-                ["2.0M+", "Undiagnosed & Untreated", "Over 2M U.S. children receive zero behavioral care, leaving teachers overwhelmed by unmanaged symptoms.", INDIGO]
-            ];
-            s2_stats.forEach((st, idx) => {
-                s2.addShape(pptx.shapes.RECTANGLE, { x: 0.8 + idx*3.95, y: 1.7, w: 3.8, h: 3.0, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-                s2.addText(st[0], { x: 1.0 + idx*3.95, y: 1.9, w: 3.4, h: 0.6, fontSize: 32, bold: true, color: st[3] });
-                s2.addText(st[1], { x: 1.0 + idx*3.95, y: 2.6, w: 3.4, h: 0.4, fontSize: 14, bold: true, color: TEXT_WHITE });
-                s2.addText(st[2], { x: 1.0 + idx*3.95, y: 3.1, w: 3.4, h: 1.4, fontSize: 11, color: TEXT_GRAY });
-            });
-            s2.addShape(pptx.shapes.RECTANGLE, { x: 0.8, y: 5.0, w: 11.7, h: 1.8, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-            s2.addText("The Escalation Loop in Public Schools:", { x: 1.0, y: 5.2, w: 11.3, h: 0.3, fontSize: 14, bold: true, color: TEXT_WHITE });
-            s2.addText("When sensory overreactivity triggers a meltdown, teacher distress and parental complaints mount. Lacking in-classroom tools, schools resort to disciplinary removal—pushing children directly into the education blindspot.", { x: 1.0, y: 5.6, w: 11.3, h: 1.0, fontSize: 12, color: TEXT_GRAY });
-
-            // Slide 3
-            let s3 = pptx.addSlide();
-            addHeader(s3, "MARKET OPPORTUNITY", "A 8.5M Child Market Across B2C & B2G Expansion");
-            s3.addShape(pptx.shapes.RECTANGLE, { x: 0.8, y: 1.7, w: 5.7, h: 5.1, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-            s3.addText("PRIMARY TARGET: B2C / B2B2C DIRECT", { x: 1.0, y: 1.9, w: 5.3, h: 0.3, fontSize: 12, bold: true, color: INDIGO });
-            s3.addText("1.87 Million Paying Users", { x: 1.0, y: 2.3, w: 5.3, h: 0.5, fontSize: 22, bold: true, color: TEXT_WHITE });
-            s3.addText("• US School-Age Population (6–18): ~53 Million\n• Neurodivergent Cohort (~13%): 6.9M Diagnosed + 1.6M Undiagnosed = 8.5M Kids\n• Willingness To Pay (WTP): 60% Mid/High Income (30% WTP) + 40% Medicaid/Low Income (10% WTP)\n• Target Addressable Market: 1.87M Children", { x: 1.0, y: 3.0, w: 5.3, h: 3.5, fontSize: 12, color: TEXT_GRAY });
-
-            s3.addShape(pptx.shapes.RECTANGLE, { x: 6.8, y: 1.7, w: 5.7, h: 5.1, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-            s3.addText("EXPANSION: B2G / B2B SCHOOL GRANTS", { x: 7.0, y: 1.9, w: 5.3, h: 0.3, fontSize: 12, bold: true, color: PURPLE });
-            s3.addText("Assistive Tech & Mental Health Grants", { x: 7.0, y: 2.3, w: 5.3, h: 0.5, fontSize: 22, bold: true, color: TEXT_WHITE });
-            s3.addText("• IEP Budget Bypass: Unlocking dedicated federal/state grants instead of tight IEP budgets.\n• Targeted Grant Accounts:\n  - Title I Assistive Technology (AT) Grants\n  - Student Mental Health & Wellness Grants\n• Clinical Partnerships: Direct referrals through pediatric hospital networks (e.g., U-M C.S. Mott Children's Hospital).", { x: 7.0, y: 3.0, w: 5.3, h: 3.5, fontSize: 12, color: TEXT_GRAY });
-
-            // Slide 4
-            let s4 = pptx.addSlide();
-            addHeader(s4, "VORI TECHNOLOGY", "Sensory-Friendly Software + Hardware Integration");
-            s4.addShape(pptx.shapes.RECTANGLE, { x: 0.8, y: 1.7, w: 5.7, h: 5.1, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-            s4.addText("VORI NEURO-FEEDBACK SOFTWARE", { x: 1.0, y: 1.9, w: 5.3, h: 0.3, fontSize: 13, bold: true, color: INDIGO });
-            s4.addText("Real-Time Micro-Interventions", { x: 1.0, y: 2.3, w: 5.3, h: 0.5, fontSize: 20, bold: true, color: TEXT_WHITE });
-            s4.addText("• Algorithmic vision & eye-tracking module that senses behavioral micro-changes (fixation drop, erratic gaze).\n• Deploys unobtrusive sensory grounding visual cues directly during class time.\n• Automatically adjusts stimulus complexity based on real-time neural engagement.", { x: 1.0, y: 3.0, w: 5.3, h: 3.5, fontSize: 12, color: TEXT_GRAY });
-
-            s4.addShape(pptx.shapes.RECTANGLE, { x: 6.8, y: 1.7, w: 5.7, h: 5.1, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-            s4.addText("ULTRA-LIGHTWEIGHT HARDWARE (<90g)", { x: 7.0, y: 1.9, w: 5.3, h: 0.3, fontSize: 13, bold: true, color: PURPLE });
-            s4.addText("Overcoming Sensory Aversion", { x: 7.0, y: 2.3, w: 5.3, h: 0.5, fontSize: 20, bold: true, color: TEXT_WHITE });
-            s4.addText("• Solves the #1 parent pain point: sensory aversion to heavy VR headsets or rigid glasses.\n• Built with soft-touch medical silicone weighing under 90g.\n• Includes non-wearable 3D projection fallback for hypersensitive children unable to wear devices.", { x: 7.0, y: 3.0, w: 5.3, h: 3.5, fontSize: 12, color: TEXT_GRAY });
-
-            // Slide 5
-            let s5 = pptx.addSlide();
-            addHeader(s5, "STEALTH HEALTH UX", "Preemptive De-escalation & Dual-Facing Dashboards");
-            s5.addShape(pptx.shapes.RECTANGLE, { x: 0.8, y: 1.7, w: 5.7, h: 5.1, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-            s5.addText("CHILD INTERFACE: ZERO STIGMA", { x: 1.0, y: 1.9, w: 5.3, h: 0.3, fontSize: 13, bold: true, color: EMERALD });
-            s5.addText("'Stealth Health' Design", { x: 1.0, y: 2.3, w: 5.3, h: 0.5, fontSize: 20, bold: true, color: TEXT_WHITE });
-            s5.addText("• The words 'ADHD', 'Therapy', or 'Treatment' are 100% absent.\n• Designed as a sleek focus assistant lens to eliminate peer teasing or clinical stigma.\n• Intervenes silently before emotional outbursts occur, keeping cognitive load on learning.", { x: 1.0, y: 3.0, w: 5.3, h: 3.5, fontSize: 12, color: TEXT_GRAY });
-
-            s5.addShape(pptx.shapes.RECTANGLE, { x: 6.8, y: 1.7, w: 5.7, h: 5.1, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-            s5.addText("PARENT & CLINICIAN DASHBOARD", { x: 7.0, y: 1.9, w: 5.3, h: 0.3, fontSize: 13, bold: true, color: INDIGO });
-            s5.addText("Actionable Neuro-Analytics", { x: 7.0, y: 2.3, w: 5.3, h: 0.5, fontSize: 20, bold: true, color: TEXT_WHITE });
-            s5.addText("• Quietly streams anonymized, high-fidelity neuro-metric reports to parents and ABA therapists.\n• Monthly progress maps track focus duration, sensory overreactivity drops, and intervention efficacy.\n• Provides empirical evidence for IEP reviews and clinical consultations.", { x: 7.0, y: 3.0, w: 5.3, h: 3.5, fontSize: 12, color: TEXT_GRAY });
-
-            // Slide 6
-            let s6 = pptx.addSlide();
-            addHeader(s6, "BUSINESS MODEL", "$10/Month Subscription with $6.7M 3-Year Revenue Potential");
-            const s6_metrics = [
-                ["Pricing Structure", "$10 / mo", "$120/year annual subscription. Accessible across Medicaid & private pay.", EMERALD],
-                ["Average Retention", "24 Months", "LTV = $240+ per user. Continuous content updates prevent attrition.", INDIGO],
-                ["1% SOM Target", "18,700 Users", "Capturing just 1% of total US paying addressable market (1.87M).", PURPLE]
-            ];
-            s6_metrics.forEach((m, idx) => {
-                s6.addShape(pptx.shapes.RECTANGLE, { x: 0.8 + idx*3.95, y: 1.7, w: 3.8, h: 2.6, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-                s6.addText(m[0], { x: 1.0 + idx*3.95, y: 1.9, w: 3.4, h: 0.3, fontSize: 12, color: TEXT_GRAY });
-                s6.addText(m[1], { x: 1.0 + idx*3.95, y: 2.2, w: 3.4, h: 0.6, fontSize: 28, bold: true, color: m[3] });
-                s6.addText(m[2], { x: 1.0 + idx*3.95, y: 2.9, w: 3.4, h: 1.2, fontSize: 11, color: TEXT_WHITE });
-            });
-            s6.addShape(pptx.shapes.RECTANGLE, { x: 0.8, y: 4.6, w: 11.7, h: 2.2, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-            s6.addText("FINANCIAL RECALCULATION (3-YEAR CUMULATIVE REVENUE)", { x: 1.0, y: 4.8, w: 11.3, h: 0.3, fontSize: 13, bold: true, color: INDIGO });
-            s6.addText("• 18,700 users × $120/year = $2,244,000 Annual Run Rate (ARR)\n• 3-Year Cumulative Revenue: $2.244M × 3 Years = $6.73 Million\n• Bottom-Line Impact: Generates self-sustaining operational runway covering hardware R&D and clinical validation.", { x: 1.0, y: 5.2, w: 11.3, h: 1.4, fontSize: 12, color: TEXT_GRAY });
-
-            // Slide 7
-            let s7 = pptx.addSlide();
-            addHeader(s7, "GO-TO-MARKET STRATEGY", "Dual-Track Distribution: Clinical Endorsement + AT Funding");
-            s7.addShape(pptx.shapes.RECTANGLE, { x: 0.8, y: 1.7, w: 5.7, h: 5.1, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-            s7.addText("PRIMARY GTM: B2B2C / D2C", { x: 1.0, y: 1.9, w: 5.3, h: 0.3, fontSize: 13, bold: true, color: INDIGO });
-            s7.addText("Clinical Referral Partnerships", { x: 1.0, y: 2.3, w: 5.3, h: 0.5, fontSize: 20, bold: true, color: TEXT_WHITE });
-            s7.addText("• Partnering directly with top pediatric health networks (starting with U-M C.S. Mott Children's Hospital).\n• Pediatric neurologists & ABA clinics recommend the $10/mo Vori subscription to parents on 9+ month waitlists.\n• Zero prescription dependency while gaining clinical authority.", { x: 1.0, y: 3.0, w: 5.3, h: 3.5, fontSize: 12, color: TEXT_GRAY });
-
-            s7.addShape(pptx.shapes.RECTANGLE, { x: 6.8, y: 1.7, w: 5.7, h: 5.1, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-            s7.addText("SECONDARY GTM: B2G / GRANT BYPASS", { x: 7.0, y: 1.9, w: 5.3, h: 0.3, fontSize: 13, bold: true, color: PURPLE });
-            s7.addText("Assistive Tech & Wellness Grants", { x: 7.0, y: 2.3, w: 5.3, h: 0.5, fontSize: 20, bold: true, color: TEXT_WHITE });
-            s7.addText("• Bypass slow general school district IEP budgets by tapping dedicated federal grant pools.\n• Target Title I Assistive Technology (AT) Grants & School Mental Health Grants for bulk device deployment.\n• Schools receive non-disruptive classroom management tools at zero cost to general budgets.", { x: 7.0, y: 3.0, w: 5.3, h: 3.5, fontSize: 12, color: TEXT_GRAY });
-
-            // Slide 8
-            let s8 = pptx.addSlide();
-            addHeader(s8, "CLINICAL VALIDATION", "Phased 300-Participant Pilot Strategy (N=300)");
-            const s8_phases = [
-                ["PHASE 1 (N=50)", "Sensory Receptivity", "Evaluating Vori hardware ergonomics, weight distribution (<90g), and tactile comfort among hypersensitive ASD/ADHD children.", INDIGO],
-                ["PHASE 2 (N=100)", "4-Week Engagement", "Measuring classroom focus duration, sensory de-escalation efficiency, and software engagement retention.", PURPLE],
-                ["PHASE 3 (N=150)", "8-Week Efficacy Pilot", "Testing behavioral score improvements, parent dashboard satisfaction, and $10/mo subscription conversion rate.", EMERALD]
-            ];
-            s8_phases.forEach((p, idx) => {
-                s8.addShape(pptx.shapes.RECTANGLE, { x: 0.8 + idx*3.95, y: 1.7, w: 3.8, h: 5.1, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-                s8.addText(p[0], { x: 1.0 + idx*3.95, y: 1.9, w: 3.4, h: 0.3, fontSize: 12, bold: true, color: p[3] });
-                s8.addText(p[1], { x: 1.0 + idx*3.95, y: 2.3, w: 3.4, h: 0.5, fontSize: 18, bold: true, color: TEXT_WHITE });
-                s8.addText(p[2], { x: 1.0 + idx*3.95, y: 3.0, w: 3.4, h: 3.5, fontSize: 12, color: TEXT_GRAY });
-            });
-
-            // Slide 9
-            let s9 = pptx.addSlide();
-            addHeader(s9, "ACCELERATION GOALS", "12-Month Milestones & Pinkert Accelerator Ask");
-            s9.addShape(pptx.shapes.RECTANGLE, { x: 0.8, y: 1.7, w: 5.7, h: 5.1, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-            s9.addText("12-MONTH MILESTONES", { x: 1.0, y: 1.9, w: 5.3, h: 0.3, fontSize: 13, bold: true, color: INDIGO });
-            s9.addText("• Complete 300-participant pilot testing cohort.\n• Finalize functional ultra-lightweight Vori prototype MVP (<90g).\n• Validate B2B2C subscription conversion rates with pediatric clinical networks.", { x: 1.0, y: 2.5, w: 5.3, h: 4.0, fontSize: 13, color: TEXT_WHITE });
-
-            s9.addShape(pptx.shapes.RECTANGLE, { x: 6.8, y: 1.7, w: 5.7, h: 5.1, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-            s9.addText("PINKERT ACCELERATOR ASK", { x: 7.0, y: 1.9, w: 5.3, h: 0.3, fontSize: 13, bold: true, color: PURPLE });
-            s9.addText("1. Clinical Connections: Introductions to U-M C.S. Mott Children's Hospital pediatric neurologists.\n2. Regulatory Advisory: Guidance on FDA SaMD clearance pathways vs. Wellness DTx categorization.\n3. Pitch Coaching: Support for non-dilutive grant funding (SBIR/STTR) and pre-seed venture pitch.", { x: 7.0, y: 2.5, w: 5.3, h: 4.0, fontSize: 13, color: TEXT_WHITE });
-
-            // Slide 10
-            let s10 = pptx.addSlide();
-            addHeader(s10, "FOUNDER INTRODUCTION", "Suhyun (Ellen) Lim - Founder & Lead Researcher");
-            s10.addShape(pptx.shapes.RECTANGLE, { x: 0.8, y: 1.7, w: 3.8, h: 5.1, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-            s10.addText("Suhyun (Ellen) Lim", { x: 1.0, y: 2.0, w: 3.4, h: 0.4, fontSize: 20, bold: true, color: TEXT_WHITE });
-            s10.addText("Founder & Lead Researcher, Vori", { x: 1.0, y: 2.4, w: 3.4, h: 0.3, fontSize: 12, bold: true, color: PURPLE });
-            s10.addText("• UMSI Graduate Student (MSI '28)\n• Specializing in AI & UX Research\n• Interdisciplinary background in business strategy, digital growth, and empathetic healthcare UX.", { x: 1.0, y: 3.0, w: 3.4, h: 3.5, fontSize: 11, color: TEXT_GRAY });
-
-            const exp = [
-                ["BCG / Kearney", "Management Consulting", "Led strategic diagnostics, industrial supply chain optimization, MRO cost efficiency (40% savings), and corporate turnarounds."],
-                ["Google", "Go-To-Market & Growth Strategist", "Managed digital marketing strategy for 200+ enterprises (110% target attainment) and mentored AI startups in Google for Startups Accelerator."],
-                ["HKU Undergrad", "Social Work & Design Thinking", "Majored in Social Work & Business Design; capstone venture with HK Environmental Protection Dept; deep grounding in empathetic healthcare design."]
-            ];
-            exp.forEach((e, idx) => {
-                s10.addShape(pptx.shapes.RECTANGLE, { x: 4.8, y: 1.7 + idx*1.7, w: 7.7, h: 1.5, fill: { color: CARD_BG }, line: { color: CARD_BORDER, width: 1 } });
-                s10.addText(`${e[0]} — ${e[1]}`, { x: 5.0, y: 1.8 + idx*1.7, w: 7.3, h: 0.3, fontSize: 13, bold: true, color: TEXT_WHITE });
-                s10.addText(e[2], { x: 5.0, y: 2.1 + idx*1.7, w: 7.3, h: 1.0, fontSize: 11, color: TEXT_GRAY });
-            });
-
-            // Trigger File Save
-            pptx.writeFile({ fileName: "Vori_Pediatric_DTx_Pitch_Deck.pptx" });
         }
-
-        // Initialize state
-        updateSlideDisplay();
     </script>
 </body>
 </html>
